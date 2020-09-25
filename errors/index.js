@@ -2,6 +2,11 @@ exports.send404Error = (req, res, next) => {
   res.status(404).send({ msg: 'This page does not exist' });
 };
 
+exports.handle405Error = (req, res, next) => {
+  res.status(405).send({ msg: 'Method not allowed' });
+};
+
+
 exports.send404UserError = ({status, msg, ...err}, req, res, next) => {
   if(status === 404){
   res.status(status).send({msg})
@@ -10,7 +15,7 @@ exports.send404UserError = ({status, msg, ...err}, req, res, next) => {
 }
 
 exports.handle400Error = (err, req, res, next) => {
-  if (err.code === '22P02'){
+  if (err.code === '22P02' || err.code === '23502' || err.code === '23503' || err.code === "42703"){
     res.status(400).send({msg: 'Bad request'})
   }
   else{next(err)}
@@ -21,6 +26,3 @@ exports.send500Error = (err, req, res, next) => {
   res.status(500).send({ msg: 'Internal server error' });
 };
 
-exports.handle405Error = (req, res, next) => {
-  res.status(405).send({ msg: 'Method not allowed' });
-};

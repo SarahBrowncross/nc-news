@@ -27,7 +27,7 @@ exports.getArticle = (article_id) => {
 		})
 }
 
-exports.updateArticle = (article_id, votes) => {
+exports.updateArticle = (article_id, votes = 'invalid') => {
 	return connection('articles')
 		.select('*')
 		.where('article_id', article_id)
@@ -46,8 +46,19 @@ exports.updateArticle = (article_id, votes) => {
 		})
 }
 
-exports.addNewComment = (article_id, username, body) => {
+exports.getArticles = (sort_by = "created_at", order = 'desc', author, topic) => {
 	return connection('articles')
-		
-
+		.select('articles.*')
+		.modify(function(knex){
+			if(author){
+				knex.where('articles.author', author)
+			}
+			if(topic){
+				knex.where('articles.topic', topic)
+			}
+		})
+		.count('comment_id AS comment_count')
+		.leftJoin('comments', 'comments.article_id', 'articles.article_id')
+		.groupBy('articles.article_id')
+		.orderBy(sort_by, order)
 }

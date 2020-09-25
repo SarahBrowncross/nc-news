@@ -1,4 +1,4 @@
-const { removeArticleById, getArticle, updateArticle, addNewComment } = require('../models/articles.models')
+const { removeArticleById, getArticle, updateArticle, getArticles } = require('../models/articles.models')
 
 exports.deleteArticleById = (req, res, next) => {
 	const {article_id} = req.params
@@ -28,13 +28,14 @@ exports.patchArticle = (req, res, next) => {
 		.catch(next)
 }
 
-exports.sendComments = (req, res, next) => {
-	const {article_id} = req.params
-	const {username} = req.body
-	const {body} = req.body
-	addNewComment(article_id, username, body)
-		.then(([comments]) => {
-			res.status(201).send({comments})
+exports.sendArticles = (req, res, next) => {
+	const {sort_by} = req.query
+	const {order} = req.query
+	const {author} = req.query
+	const {topic} = req.query
+	getArticles(sort_by, order, author, topic)
+		.then((articles) => {
+			res.status(200).send({ articles })
 		})
 		.catch(next)
 }
